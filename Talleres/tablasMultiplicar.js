@@ -4,7 +4,7 @@
 
  
 for (let multiplicando = 1; multiplicando <= 10; multiplicando++) {
-    console.log(`Número ${multiplicando}`);  
+    console.log(`Tabla del ${multiplicando}`);  
 
     let multiplicador = 1;
     while ( multiplicador <= 10) {

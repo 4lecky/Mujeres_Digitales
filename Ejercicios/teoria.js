@@ -65,3 +65,4 @@ while (contador <= 5) {
 }   
 
 // Aqui lo que estamos haciendo es que mientras contador sea menor o igual a 5 se va a ir sumando 1 y mostrando el valor de contador
+
