@@ -6,9 +6,9 @@ import { Iuser } from '../../models';
 export class UsersService {
 
     private users: Iuser[] = [
-        { id: 1, name: 'John Doe', email: 'Jhon@gmail.com', password: '123456*' },
-        { id: 2, name: 'Jane Doe', email: 'Jane@gmail.com', password: '123456*' },
-        { id: 3, name: 'Jim Beam', email: 'Jim@gmail.com', password: '123456*'}
+        { id: 1, name: 'John Doe', email: 'Jhon@gmail.com', password: '123456*', age: 30 },
+        { id: 2, name: 'Jane Doe', email: 'Jane@gmail.com', password: '123456*', age: 25 },
+        { id: 3, name: 'Jim Beam', email: 'Jim@gmail.com', password: '123456*',  age: 40 },
     ]
 
     // metodo para obtener todos los usuarios

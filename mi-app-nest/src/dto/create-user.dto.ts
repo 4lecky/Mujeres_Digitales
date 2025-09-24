@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail, MinLength, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsEmail, MinLength, MaxLength,IsOptional, IsInt, Min } from 'class-validator';
 
 export class CreateUserDTO {
     //export type Iuser = { id: number, name: string, email: string }
@@ -14,5 +14,10 @@ export class CreateUserDTO {
     @MinLength(6)
     @MaxLength(10)
     password: string;
+
+    @IsOptional()
+    @IsInt()
+    @Min(18, { message: 'La edad debe ser un numero positivo y mayor de edad' })
+    age?: number;
 
 }
