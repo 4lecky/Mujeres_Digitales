@@ -4,10 +4,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ProductosModule } from './modules/productos/productos.module';
 
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal: true}),UsersModule, AuthModule],
+  imports: [ConfigModule.forRoot({isGlobal: true}),UsersModule, AuthModule, ProductosModule],
   controllers: [AppController],
   providers: [AppService],
 
