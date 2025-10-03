@@ -1,24 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { Iuser } from '../../models';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
+import { CreateUserDTO } from 'src/dto/create-user.dto';
+import { UpdateUserDTO } from 'src/dto/update-user.dto';
 
 
 @Injectable()
 export class UsersService {
 
-    private users: Iuser[] = [
-        { id: 1, name: 'John Doe', email: 'Jhon@gmail.com', password: '123456*', age: 30 },
-        { id: 2, name: 'Jane Doe', email: 'Jane@gmail.com', password: '123456*', age: 25 },
-        { id: 3, name: 'Jim Beam', email: 'Jim@gmail.com', password: '123456*',  age: 40 },
-    ]
+    // Hacemos este cambio para consumir la base de datos
+    constructor (
+        @InjectRepository(User)
+        private usersRepo: Repository <User>
+    ){}
 
     // metodo para obtener todos los usuarios
-    findAll(): Iuser[] {
-        return this.users;
+    findAll() {
+        return this.usersRepo.find();
     }
 
     // metodo para obtener un usuario por id
-    findOne(id: number): Iuser {
-        const userFind = this.users.find(user => user.id === id);
+    async findOne(id: number) {
+        const userFind = await this.usersRepo.findOne({ where: { id }})
         if (!userFind) {
             throw new NotFoundException(`El usuario con el ${id} no existe`);
         } else {
@@ -27,32 +32,24 @@ export class UsersService {
     }
 
     // metodo para crear un usuario
-    createUser(user: Omit<Iuser, 'id'>): Iuser {
-        const newId = this.users.length > 0 ?
-            this.users[this.users.length - 1].id + 1 : 1;
-
-        const newUser: Iuser = { 
-            id: newId, ...user 
-        };
-
-        this.users.push(newUser);
-        return newUser;
+    createUser(newUser: CreateUserDTO) {
+        //Con esto creamos el usuario
+        const userCreated = this.usersRepo.create(newUser);
+        //Con esto lo guardamos
+        return this.usersRepo.save(userCreated)
     }
 
     // metodo para actualizar un usuario
-    updateUser (id: number, newUser: Omit<Iuser, 'id'>): Iuser{
-        const userIndex = this.findOne(id);
-        Object.assign(userIndex, newUser);
-        return userIndex;
+    async updateUser (id:number, userUpdate: UpdateUserDTO){
+        await this.usersRepo.update(id, userUpdate);
+        return this.findOne(id); 
     }
 
-    deleteUser(id: number){
-        //Usamos estsa funcion para encontrar el usuario y lanzar la excepcion si no existe
-        // const userRemove = this.findOne(id);
-        // this.users.splice(userRemove.id, 1);
-        const userRemove = this.users.findIndex((user) => user.id === id);
-        this.users.splice(userRemove, 1);
-        return { message: `Usuario con id ${id} eliminado` };
+    async deleteUser(id: number){
+        const result = await this.usersRepo.delete(id)
+        // 0 = Falso, 1= verdadero (Es un boleano)
+        if (result.affected === 0) throw new NotFoundException(`Usuario con encontrado con el id ${id}`)
+        return { message : `El usuario con el id ${id} fue eliminado exitosamente`}
     }
 
 }
