@@ -53,9 +53,10 @@ export class ProductosController {
      */
     @UseGuards(JwtAuthGuard)
     @Put(':id')
-    updateProduct(@Param('id') id: string, @Body() body: UpdateProductDTO) {
-        return this.productosService.updateProduct(Number(id), body)
+    updateProduct(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateProductDTO) {
+        return this.productosService.updateProduct(id, body)
     }
+
 
     /**
      * Elimina un producto.
@@ -64,6 +65,7 @@ export class ProductosController {
      */
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
+    // Con el pipé hacemos la validación que antes haciamos con Number(id) 
     deleteProduct(@Param('id', ParseIntPipe) id: number) {
         return this.productosService.deleteProduct(id);
     }
