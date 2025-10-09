@@ -10,10 +10,6 @@ import { UsersService } from '../users/users.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStretegy } from './jwt.strategy'
 
-
-
-
-
 @Module({
 
   imports: [

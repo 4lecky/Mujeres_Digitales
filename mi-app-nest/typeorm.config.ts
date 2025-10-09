@@ -1,7 +1,8 @@
 // Archivo para desarrollo
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
-import {User} from './src/entities/user.entity';
+import { User} from './src/entities/user.entity';
+import { Products } from './src/entities/productos.entity';
 
 dotenv.config();
 
@@ -12,6 +13,6 @@ export default new DataSource ({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User], // Llamamos las entidades para crear las migraciones
+    entities: [User, Products], // Llamamos las entidades para crear las migraciones
     migrations: ['./src/migrations/*.ts'] // Llamamos la migraciones
 });

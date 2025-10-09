@@ -1,24 +1,40 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import {IProduct} from '../../models/IProduc';
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm';
+import { Products } from '../../entities/productos.entity';
+import {CreateProductDTO} from '../../dto/productos/create-product.dto';
+import {UpdateProductDTO} from '../../dto/productos/update-product.dto';
 
 @Injectable()
 export class ProductosService {
 
+    /**
+     * Inyecta el repositorio de productos para operaciones CRUD.
+     * param productsRepo - Repositorio TypeORM de la entidad Products
+     */
+    constructor(
+        @InjectRepository(Products)
+        private productsRepo: Repository<Products>
+    ) {}
 
-    private productos: IProduct[] = [
-        {id: 1, name: 'Marcadores', descripcion: 'Marcadores color pastel', stock: 20},
-        {id: 2, name: 'Cuadernos', descripcion: 'Cuadriculados de 100 hojas', stock: 100},
-        {id: 3, name: 'Esferos', descripcion: 'Tinta azul', stock: 10}
-    ]
-
-    // Con esto obtenemos todos los productos
-    allProducts(): IProduct[] {
-        return this.productos;
+    /**
+     * Obtiene todos los productos en la base de datos.
+     * returns Lista de productos
+     */
+    allProducts() {
+        return this.productsRepo.find();
     }
 
-    // Busca a un producto por id
-    oneProduct(id:number): IProduct {
-        const productFind = this.productos.find(product => product.id === id )
+    /**
+     * Busca un producto por su ID.
+     * Lanza una excepción si el producto no existe.
+     * param id - ID del producto a buscar
+     * returns El producto encontrado
+     * throws NotFoundException si el producto no existe
+     */
+    async oneProduct(id:number) {
+        const productFind = await this.productsRepo.findOne({where: { id }});
+
         if (!productFind){
             throw new NotFoundException(`El producto con el id ${id} no existe`);
         }else{
@@ -26,32 +42,44 @@ export class ProductosService {
         }
     }
 
-    // Omitimos que pida el id para crear el producto
-    createProduct (product: Omit<IProduct, 'id'>): IProduct {
-        // Simulamos un id autoincremental
-        const idAutoIncrement = this.productos.length > 0 ?
-            this.productos[this.productos.length - 1].id + 1 : 1;
+    /**
+     * Crea un nuevo producto y lo guarda en la base de datos.
+     * param newProduct - Datos del producto a crear
+     * returns El producto creado
+     */
+    createProduct (newProduct: CreateProductDTO){
 
-        const newProduct: IProduct = {
-            id: idAutoIncrement, ...product
-        }; 
+        const ProductCreated = this.productsRepo.create(newProduct);
 
-        this.productos.push(newProduct);
-        return newProduct;
+        return this.productsRepo.save(ProductCreated);
 
     }
 
-    // Actualizar producto
-    updateProduct (id:number, newProduct: Omit<IProduct,'id'>):IProduct {
-        const productRegistro = this.oneProduct(id);
-        Object.assign(productRegistro, newProduct);
-        return productRegistro;
+    /**
+     * Actualiza un producto existente.
+     * Si el producto no existe, se lanzará una excepción en oneProduct.
+     * param id - ID del producto a actualizar
+     * param productUpdate - Datos a actualizar
+     * returns El producto actualizado
+     */
+    async updateProduct (id:number, productUpdate:UpdateProductDTO) {
+        await this.productsRepo.update(id, productUpdate);
+        return this.oneProduct(id);
     }
 
-    deleteProduct(id:number){
 
-        const productRemove = this.productos.findIndex((product) => product.id === id);
-        this.productos.splice(productRemove, 1);
+    /**
+     * Elimina un producto por su ID.
+     * Lanza una excepción si el producto no existe.
+     * param id - ID del producto a eliminar
+     * returns Mensaje de éxito si se elimina correctamente
+     * throws NotFoundException si el producto no existe
+     */
+    async deleteProduct(id:number){
+
+        const productRemove = await this.productsRepo.delete(id);
+
+        if (productRemove.affected === 0) throw new NotFoundException(`El producto con el id ${id} no fue encontrado`)
         return { message: `El producto con el ${id} ha sido eliminado exitosamente`}
     }
 

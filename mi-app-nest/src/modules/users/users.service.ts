@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
-import { Iuser } from '../../models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -10,7 +9,7 @@ import { UpdateUserDTO } from 'src/dto/update-user.dto';
 @Injectable()
 export class UsersService {
 
-    // Hacemos este cambio para consumir la base de datos
+    // Hacemos este cambio para consumir la base de datos y las entitis
     constructor (
         @InjectRepository(User)
         private usersRepo: Repository <User>
@@ -48,7 +47,7 @@ export class UsersService {
     async deleteUser(id: number){
         const result = await this.usersRepo.delete(id)
         // 0 = Falso, 1= verdadero (Es un boleano)
-        if (result.affected === 0) throw new NotFoundException(`Usuario con encontrado con el id ${id}`)
+        if (result.affected === 0) throw new NotFoundException(`El usuario con el id ${id} no fue encontrado`)
         return { message : `El usuario con el id ${id} fue eliminado exitosamente`}
     }
 

@@ -6,6 +6,7 @@ import { UpdateUserDTO } from '../../dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard'
 
 @Controller('users')
+// Con esto protegemos todo nuestro modulo
 @UseGuards(JwtAuthGuard)
 export class UsersController {
 
