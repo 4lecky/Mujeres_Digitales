@@ -4,6 +4,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from 'src/dto/create-user.dto';
 import { UpdateUserDTO } from 'src/dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -40,7 +41,10 @@ export class UsersService {
 
     // metodo para actualizar un usuario
     async updateUser (id:number, userUpdate: UpdateUserDTO){
-        await this.usersRepo.update(id, userUpdate);
+        // Con esto encriptamos la contraseña en la actualizacion del usuario
+        const hashedPassword = await bcrypt.hash(userUpdate.password, 10);
+
+        await this.usersRepo.update(id, {...userUpdate, password: hashedPassword});
         return this.findOne(id); 
     }
 

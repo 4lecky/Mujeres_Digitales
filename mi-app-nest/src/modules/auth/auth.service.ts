@@ -47,8 +47,8 @@ export class AuthService {
 
         }
 
-        //Cuerpo del token
-        const payloadToken = { id: user.id, name: user.name, email: user.email }
+        //Cuerpo del token y datos que vamos a enviar
+        const payloadToken = { id: user.id, name: user.name, email: user.email, role: user.role };
         const jsonJwt = await this.jwtService.signAsync(payloadToken);
 
         return {

@@ -1,6 +1,13 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-// Creamos la entidad
+// Hacemos esto para que los escalable 
+export enum RolesEmun {
+    ADMIN = 'admin',
+    USER = 'user'
+};
+
+export type Roles = 'admin' | 'user';
+
 @Entity()
 export class User {
     // Con esto indicamos que es una primary key
@@ -19,5 +26,9 @@ export class User {
 
     @Column({nullable:true})
     age?: number;
+
+    // Es como crear un enum
+    @Column({default: 'user'})
+    role: Roles;
 
 }
