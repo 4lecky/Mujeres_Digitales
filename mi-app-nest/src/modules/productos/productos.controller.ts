@@ -3,6 +3,9 @@ import { ProductosService } from './productos.service'
 import { CreateProductDTO } from '../../dto/productos/create-product.dto';
 import { UpdateProductDTO } from '../../dto/productos/update-product.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard'
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/role.decorator';
+import { RolesEmun} from '../../entities/user.entity';
 
 
 @Controller('productos')
@@ -38,7 +41,8 @@ export class ProductosController {
      * Protegido con autenticación JWT.
      * body - Datos del nuevo producto (CreateProductDTO)
      */
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(RolesEmun.ADMIN)   
     @Post()
     createProduct(@Body() body: CreateProductDTO) {
         return this.productosService.createProduct(body);
@@ -51,7 +55,8 @@ export class ProductosController {
      * param id - ID del producto a actualizar
      * param body - Datos a actualizar (UpdateProductDTO)
      */
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(RolesEmun.ADMIN)   
     @Put(':id')
     updateProduct(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateProductDTO) {
         return this.productosService.updateProduct(id, body)
@@ -63,7 +68,8 @@ export class ProductosController {
      * DELETE /productos/:id
      * param id - ID del producto a eliminar
      */
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(RolesEmun.ADMIN)   
     @Delete(':id')
     // Con el pipé hacemos la validación que antes haciamos con Number(id) 
     deleteProduct(@Param('id', ParseIntPipe) id: number) {

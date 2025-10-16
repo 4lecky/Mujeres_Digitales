@@ -41,10 +41,17 @@ export class UsersService {
 
     // metodo para actualizar un usuario
     async updateUser (id:number, userUpdate: UpdateUserDTO){
-        // Con esto encriptamos la contraseña en la actualizacion del usuario
-        const hashedPassword = await bcrypt.hash(userUpdate.password, 10);
 
-        await this.usersRepo.update(id, {...userUpdate, password: hashedPassword});
+        const dataToUpdate = { ...userUpdate }
+        let dataWithPassword;
+
+        if (userUpdate.password) {
+            // Con esto encriptamos la contraseña en la actualizacion del usuario
+            const hashedPassword = await bcrypt.hash(userUpdate.password, 10);
+            dataWithPassword = { ...dataToUpdate, password: hashedPassword }
+        }
+
+        await this.usersRepo.update(id, userUpdate.password ? dataWithPassword: dataToUpdate);
         return this.findOne(id); 
     }
 
