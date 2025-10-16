@@ -2,6 +2,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY } from "./role.decorator";
+import { BusinessException } from "src/common/exceptions/bussines.exeption";
 
 
 @Injectable()
@@ -25,7 +26,8 @@ export class RolesGuard implements CanActivate {
 
         // Con esto verificamomsos si el rol del usuario esta en los roles permitidos
         if (!requiredRoles.includes(user.role)) {
-            throw new ForbiddenException ('Su rol no tiene permisos para esta accion');
+            // throw new ForbiddenException ('Su rol no tiene permisos para esta accion');
+            throw new BusinessException ('Su rol no tiene permisos para esta accion');
         }
 
         return true;
