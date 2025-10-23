@@ -43,6 +43,8 @@ describe('RolesGuard', () => {
     });
     // prueba para la hora del commit 
 
+    // PRUEBA COMMIT 2
+
     it('Debe lanzar BussinessException si el rol no coincide con el requerido', () => {
 
         (reflector.getAllAndOverride as jest.Mock).mockReturnValue(['admin'])
